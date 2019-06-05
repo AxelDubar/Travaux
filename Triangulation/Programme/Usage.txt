@@ -1,0 +1,6 @@
+Appuyer sur "p" permet d'ajouter des points (en cliquant)
+Appuyer sur "s" permet de supprimer des points (en cliquant sur le point à enlever)
+Appuyer sur "c" permet de supprimer tous les points.
+Appuyer sur "e" permet d'afficher l'enveloppe convexe deu nuage de point
+Appuyer sur "t" permet d'afficher la triangulation du nuage de point
+Appuyer sur "d" permet d'afficher la triangulation de Delaunay du nuage de point, en cliquant sur un triangle on peut observer son cercle circonscrit (afin de verifier le critere de la boule vide)

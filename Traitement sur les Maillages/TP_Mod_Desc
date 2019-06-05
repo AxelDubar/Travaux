@@ -1,0 +1,146 @@
+import bpy
+import math 
+import mathutils
+
+def buildFaceAdjacency(obj):
+    dic = {}
+    for p in obj.data.polygons:
+        for ek in p.edge_keys:
+            if ek not in dic:
+                dic[ek] = []
+            dic[ek].append(p.index)
+    dicF = {}
+    for k in dic.keys():
+        if len(dic[k]) == 2:
+            if dic[k][0] not in dicF:
+                dicF[dic[k][0]] = []
+            if dic[k][1] not in dicF[dic[k][0]]:
+                dicF[dic[k][0]].append(dic[k][1])
+            if dic[k][1] not in dicF:
+                dicF[dic[k][1]] = []
+            if dic[k][0] not in dicF[dic[k][1]]:
+                dicF[dic[k][1]].append(dic[k][0])
+    return dicF
+
+def newColor(col, name):
+    mat = bpy.data.materials.get(name)
+    if mat == None:
+        mat = bpy.data.materials.new(name)
+    mat.diffuse_color = col
+
+def setColor(obj, idFace, color):
+    if color not in obj.data.materials:
+        obj.data.materials.append(bpy.data.materials[color])
+    obj.data.polygons[idFace].material_index = obj.data.materials.find(color)
+    
+def setColorAll(obj, color):
+    if color not in obj.data.materials:
+        obj.data.materials.append(bpy.data.materials[color])
+    indexMat = obj.data.materials.find(color)
+    for p in obj.data.polygons:
+        obj.data.polygons[p.index].material_index = indexMat
+    
+    
+    
+    
+def similaire(normale1,normale2,marge):
+    if(abs(normale1[0]-normale2[0])>marge):
+        return False
+    if(abs(normale1[1]-normale2[1])>marge):
+        return False
+    if(abs(normale1[2]-normale2[2])>marge):
+        return False
+    return True
+
+def est_similaire(point1,point2,obj,marge):
+    if(similaire(obj.data.polygons[point1].normal,obj.data.polygons[point2].normal,marge)):
+        return True
+    return False
+    
+def partie1(marge):
+    monObj = bpy.context.scene.objects['cowhead.003']
+    voisins=buildFaceAdjacency(monObj)
+    
+    setColorAll(monObj,"blanc")
+    
+    for p in range(len(monObj.data.polygons)):
+        for v in voisins[p]:
+            if(not est_similaire(p,v,monObj,marge)):
+                setColor(monObj, p, "violet")
+                break
+  
+            
+def get_dist(p,pPlan,plan,marge):
+    dist=mathutils.geometry.distance_point_to_plane(p, pPlan, plan)
+    if(abs(dist)<marge):
+        return 0
+    else :
+        return dist/abs(dist)
+    
+        
+def partie2(marge):
+    monObj = bpy.context.scene.objects['kitten']
+    voisins=buildFaceAdjacency(monObj)
+    
+    setColorAll(monObj,"blanc")
+    
+    for p in range(len(monObj.data.polygons)):
+        compteur=0
+        for v in voisins[p]:
+            dist=get_dist(monObj.data.polygons[v].center,monObj.data.polygons[p].center,monObj.data.polygons[p].normal,marge)
+            if(dist<0):
+                compteur-=1
+            elif(dist>0):
+                compteur+=1
+        if(compteur>0):
+            setColor(monObj, p, "bleu")
+        elif(compteur<0):
+            setColor(monObj, p, "rouge")
+        
+def partie3(marge):
+    monObj = bpy.context.scene.objects['gargoyle.001']
+    voisins=buildFaceAdjacency(monObj)
+    
+    setColorAll(monObj,"blanc")
+    
+    for p in range(len(monObj.data.polygons)):
+        compteur=0
+        for v in voisins[p]:
+            dist=get_dist(monObj.data.polygons[v].center,monObj.data.polygons[p].center,monObj.data.polygons[p].normal,marge)
+            if(dist<0):
+                compteur-=1
+            elif(dist>0):
+                compteur+=1
+        if(compteur>=2):
+            setColor(monObj, p, "bleu")
+        elif(compteur>0):
+            setColor(monObj, p, "cyan")
+        elif(compteur<=-2):
+            setColor(monObj, p, "rouge")
+        else:
+            setColor(monObj, p, "jaune")
+            
+    
+    
+    
+# on fait les traitement en mode OBJECT
+editmode = False
+if (bpy.context.active_object.mode == 'EDIT'):
+    editmode = True
+    bpy.ops.object.mode_set(mode = 'OBJECT')
+
+newColor((1,1,1), "blanc")
+newColor((0,0,1), "bleu")
+newColor((0.5,0,0.5), "violet")
+newColor((0,1,1), "cyan")
+newColor((1,0,0), "rouge")
+newColor((1,1,0), "jaune")
+
+
+partie1(0.1) #resultat apreciable pour marge=0.1
+#partie2(0.000001) #resultat apreciable pour marge=0.1
+#partie3(0.0000001) #resultat apreciable pour marge=0.1
+
+# on repasse dans le mode d'origine
+if editmode:
+    bpy.ops.object.mode_set(mode = 'EDIT')
