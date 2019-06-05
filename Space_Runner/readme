@@ -1,0 +1,23 @@
+Nom : Dubar
+Prénom : Axel
+Mail : axel.dubar@gmail.com
+Titre du sujet : Jeu de course
+Comment compiler : Executer la commande "make all" dans le terminal
+
+Utiliser le programme : 
+	Lancer le programme avec la commande "./Space_Runner"
+	Appuyez sur "m" pour ouvrir le menu
+		Pour jouer:
+			Selectionner le nombre de joueur et le niveau puis appuyer sur jouer.
+			Vous pouvez appuyez sur m à tout moment pour ouvrir le menu 
+		Pour Editer:
+			Sélectionner Edit
+			Construisez un niveau à l'aide des outils à gauche ou charger un niveau existant avec "File" "Load"
+			Sauvegarder le niveau créé avec "File" "Save"
+
+
+Ce que vous avez fait par rapport à l'énoncé:
+	Le mode Edition, 
+	le mode jeu avec un chargement de niveau, le mode jeu à plusieurs(mais 	sans les collisions de voitures), 
+	un temps record à battre en solo, 
+	les boosts qui doublent l'accélération.
